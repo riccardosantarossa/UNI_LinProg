@@ -1,9 +1,4 @@
 %{
-#include<string.h>
-#include<stdbool.h>
-int i;
-bool isKey = false;
-char keywords[7][10] = {"var", "procedure", "while", "do", "if", "for", "else"};
 %}
 
 %%
