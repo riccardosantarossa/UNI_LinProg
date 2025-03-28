@@ -12,5 +12,5 @@ void yyerror(const char *str){fprintf(stderr, "errore: %s\n", str);}
 
 int yywrap(){return 1;}
 
-void main(){yylex();}
+void main(){yylex();} 
 
