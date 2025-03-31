@@ -1,6 +1,10 @@
 %{
 #include<string.h>
+#include <stdlib.h>
+
 int numConversion(char *num, int b);
+char * trimString(char *str);
+arr = (char*) calloc(100, sizeof(char));
 %}
 
 segno \+|-
@@ -10,22 +14,31 @@ ottale 0o[0-7]+|[0-7]+[O]
 
 %%
 {segno}*{decimale} {printf("decimale, %s", yytext);}
-{esadecimale} {printf("esadecimale, %d", numConversion(yytext, 16));}
+{esadecimale} {printf("esadecimale %d", numConversion(trimString(yytext), 16));}
+{ottale} {printf("ottale %d", numConversion(trimString(yytext), 8));}
 %%
 
 void yyerror(const char *str){fprintf(stderr, "errore: %s\n", str);}
 
 int yywrap(){return 1;}
 
+void trimString(char *str)
+{
+  
+   //Tolgo i primi due caratteri se la stringa è del tipo "0x" / "0o"
+   if((str[0] == '0' && str[1] == 'x') || (str[0] == '0' && str[1] == 'o'))
+     strncpy(arr, str + 2, strlen(str) - 2);
+   
+   //Tolgo l'ultimo carattere se la stringa è del tipo "H" / "O"
+   if(str[strlen(str) - 1] == 'H' || str[strlen(str)] == 'O')
+     strncpy(arr, str, strlen(str) - 1);
+   
+}
+
+
 int numConversion(char * num, int b)
 {
-  int val = 0;
-
-  if(!strcmp(num[0], '0') && !stcrmp(num[1], 'x') || !strcmp(num[0], '0') && !stcrmp(num[1], 'o'))
-    num = num[2:];
- 
-  if(!strcmp(num[strlen(num) - 1], 'H') || !strcmp(num[strlen(num)-1], 'O'))
-    num = num[0:strlen(num) - 1];
+  int val = 0, d = 0;
 
   for(int i = 0; i < strlen(num); i++)
   {
@@ -65,7 +78,7 @@ int numConversion(char * num, int b)
 
       default:
       {
-        int d = num[i];
+        d = num[i];
         val = val + d;
       }
         
@@ -74,4 +87,4 @@ int numConversion(char * num, int b)
    return val;
 }
 
-void main(){yylex();} 
+void main(){yylex();}
