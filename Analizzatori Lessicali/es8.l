@@ -1,10 +1,11 @@
 %{
+
 #include<string.h>
 #include <stdlib.h>
 
 int numConversion(char *num, int b);
-char * trimString(char *str);
-arr = (char*) calloc(100, sizeof(char));
+void trimString(char *str, char *arr);
+
 %}
 
 segno \+|-
@@ -13,32 +14,42 @@ esadecimale 0x[0-9a-fA-F]+|[0-9a-fA-F]+[H]
 ottale 0o[0-7]+|[0-7]+[O]
 
 %%
+
 {segno}*{decimale} {printf("decimale, %s", yytext);}
-{esadecimale} {printf("esadecimale %d", numConversion(trimString(yytext), 16));}
-{ottale} {printf("ottale %d", numConversion(trimString(yytext), 8));}
+{esadecimale} {
+                char *arr = malloc(1 * sizeof(char));
+                trimString(yytext, arr);
+                printf("esadecimale %d", numConversion(arr, 16));
+                free(arr);
+              }
+{ottale} { 
+           char *arr = malloc(1 * sizeof(char));
+           trimString(yytext, arr);
+           printf("ottale %d", numConversion(arr, 8));
+           free(arr);
+         }
+
 %%
 
 void yyerror(const char *str){fprintf(stderr, "errore: %s\n", str);}
 
 int yywrap(){return 1;}
 
-void trimString(char *str)
-{
-  
+void trimString(char *str, char *arr)
+{   
    //Tolgo i primi due caratteri se la stringa è del tipo "0x" / "0o"
    if((str[0] == '0' && str[1] == 'x') || (str[0] == '0' && str[1] == 'o'))
      strncpy(arr, str + 2, strlen(str) - 2);
    
    //Tolgo l'ultimo carattere se la stringa è del tipo "H" / "O"
    if(str[strlen(str) - 1] == 'H' || str[strlen(str)] == 'O')
-     strncpy(arr, str, strlen(str) - 1);
-   
+     strncpy(arr, str, strlen(str) - 1);  
 }
 
 
-int numConversion(char * num, int b)
+int numConversion(char *num, int b)
 {
-  int val = 0, d = 0;
+  int val = 0;
 
   for(int i = 0; i < strlen(num); i++)
   {
@@ -77,14 +88,11 @@ int numConversion(char * num, int b)
       break;
 
       default:
-      {
-        d = num[i];
-        val = val + d;
-      }
+        val = val + (int)num[i];
         
     }
   }
    return val;
 }
 
-void main(){yylex();}
+void main(){yylex();};
