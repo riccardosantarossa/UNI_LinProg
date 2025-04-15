@@ -1,0 +1,204 @@
+\documentclass{article}
+\usepackage[top=1.5cm, bottom=1.5cm, left=1cm, right=1cm]{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+  frame=none,
+  language=C,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\normalsize\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\title{Astrazione sul controllo}
+\author{R.S}
+
+\begin{document}
+\maketitle
+
+\section*{Passaggio di parametri}
+
+\begin{flushleft}
+    
+\textbf{Passaggio di parametri per valore:} \\
+\begin{itemize}
+    \item il parametro formale è una variabile locale, il parametro attuale viene valutato con r-value
+    \item le modifiche al parametro formale non si ripercuotono su quello attuale
+	\item anche dati grossi vengono copiati a scapito dell'efficienza (formale trattato come costante)
+\end{itemize}
+
+\medskip
+
+\textbf{Passaggio di parametri per riferimento:} \\
+\begin{itemize}
+    \item il parametro è un puntatore ad un riferimento di memoria
+    \item posso utilizzarlo con parole chiave (\&, ref..) oppure simulandolo coi puntatori
+    \begin{lstlisting}
+        void foo (ref int x){ x = x+1;}
+        ...
+        y = 1;
+        foo(y);
+        foo(V[y+1]);
+    \end{lstlisting}
+\end{itemize}
+
+\medskip
+
+\textbf{Passaggio di parametri per sharing:} \\
+\begin{itemize}
+    \item l'assegnazione crea la condivisione di una copia (Java, Python…), stessa cosa il passaggio per valore
+    \item implementato ad esempio in array e liste
+    \begin{lstlisting}
+        def f(a_list):
+            a_list += [1]
+        m = []
+        f(m)
+        print(m)
+    \end{lstlisting}
+ 
+\end{itemize}
+
+\medskip
+
+\textbf{Call by name:} \\
+\begin{itemize}
+    \item l'espressione del parametro viene passata senza valutazione
+    \item una chiamata esegue il corpo della procedura P valutando il parametro soltanto quando viene utilizzato (di default in Algol-W)
+    \item la valutazione del parametro viene fatta ogni volta che il parametro viene utilizzato (effetti collaterali ripetuti)
+\end{itemize}
+
+\medskip
+
+\textbf{Chiusura:} la coppia [exp, env] dove exp è il puntatore al codice dell'espressione ed env è un puntatore di catena statica a RdA \\
+
+\medskip
+
+\textbf{Call by  need:}
+\begin{itemize}
+    \item l'argomento viene valutato al massimo una volta
+    \item le valutazioni multiple restituiscono sempre lo stesso risultato perché la prima valutazione viene conservata
+    \item più efficiente del call by name, utilizzati nei linguaggi funzionali
+\end{itemize}
+
+\medskip
+
+\end{flushleft}
+ 
+
+\section*{Funzioni di ordine superiore}
+
+\begin{flushleft}
+
+Si possono passare funzioni come parametro ad altre funzioni e possono essere anche restituite come risultato
+
+\medskip
+
+\textbf{Semantica}
+\begin{itemize}
+    \item la funzione f viene passata come parametro e valutata eventualmente più volte
+    \item problemi di scope delle variabili utilizzate da f (scope statico oppure dinamico)
+\end{itemize}
+
+\medskip
+
+\textbf{Binding}
+\begin{itemize}
+    \item l'ambiente è quello della chiamata di g con parametro la funzione f $\rightarrow$ deep binding
+    \item l'ambiente è quello della chiamata di f dentro g $\rightarrow$ shallow binding
+\end{itemize}
+
+\textbf{Implementazione della chiusura}
+\begin{itemize}
+    \item nel RdA di g si inserisce la chiusura [code, env] della funzione f
+    \item alla chiamata di f si alloca il suo record di attivazione con puntatore alla catena statica env
+    \begin{lstlisting}
+        int x = 1;
+        int f (int y){ return x + y; }
+        int g (int h (int i)){
+        int x = 2;
+        return h(3) + x;}
+        ...
+        int x = 4;
+        int z = g(f);
+    \end{lstlisting}
+\end{itemize}
+
+\medskip
+
+\textbf{Politiche di binding}
+
+Ambiente di valutazione della funzione f (con nome h) dentro g:
+\begin{itemize}
+    \item scope statico $\rightarrow$ ambiente della definizione
+    \item scope dinamico: \begin{itemize}
+        \item al momento della creazione del legame h $\rightarrow$ f ovvero alla chiamata di f con parametro g
+              $\rightarrow$ \textbf{deep binding}
+        \item al momento della chiamata di f in g tramite h $\rightarrow$ \textbf{shallow binding}
+    \end{itemize}
+\end{itemize}
+
+\medskip
+
+\textbf{Implementazione dello scope dinamico}
+
+L'implementazione può avvenire sia con deep che con shallow binding:
+
+\begin{itemize}
+    \item Deep binding: 
+    \begin{itemize}
+        \item alla funzione passata come parametro si associa la chiusura per mantenere in memoria l'RdA della chiamata
+        \item per le procedure chiamate tramite parameteo si usa un link statico $\rightarrow$ salto della pila
+    \end{itemize}
+    \item Shallow binding: 
+    \begin{itemize}
+        \item non necessita la chiusura $\rightarrow$ si associa soltanto il codice della funzione
+        \item per accedere a x si risale la pila $\rightarrow$ uso di A-List e CRT
+    \end{itemize}
+\end{itemize}
+
+\medskip
+
+\textbf{Gestione delle eccezioni}
+
+I primi linguaggi utilizzavano l'istruzione \textbf{GOTO} $\rightarrow$ difficile impementare l'uscita da una procedura \\
+Introduzione delle \textbf{eccezioni}:
+
+\begin{itemize}
+    \item definizione dei blocchi protetti $\rightarrow$ insiemi di eccezioni e relativi gestori
+    \item il programma solleva un'eccezione $\rightarrow$ la computazione viene interrotta e si cerca un gestore
+    \item gestore: 
+    \begin{itemize}
+        \item codice da eseguire soltanto in caso di eccezione relativa ad un blocco protetto
+        \item ricerca del gestore $\rightarrow$ terminazione dei comandi, uscita da cicli e deallocazione di RdA
+    \end{itemize}
+\end{itemize}
+
+Se l'eccezione non viene gestita nella procedura corrente $\rightarrow$ ri-sollevata nel punto di chiamata e propagata lungo la 
+catena dinamica fino a quando non si raggiunge un gestore oppure il top level
+
+\end{flushleft}
+
+\end{document}
+
+
+
+
+
+
