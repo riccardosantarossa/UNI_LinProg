@@ -1,0 +1,146 @@
+\documentclass{article}
+\usepackage[top=1.5cm, bottom=1.5cm, left=1cm, right=1cm]{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+  frame=none,
+  language=C,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\normalsize\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\title{Tipi di Dato}
+\author{R.S}
+
+\begin{document}
+\maketitle
+
+\section*{Tipi di dato composti}
+
+\textbf{Record}
+
+\begin{flushleft}
+
+Sono una collezione di campi di tipi diversi selezionabili con il proprio nome \\    
+In C e in Java si rappresentano come:
+\begin{itemize}
+    \item Struct in C: 
+    \begin{lstlisting}
+      struct studente {
+        char nome[20];
+        int matricola; };
+        
+        struct studente s;
+        s.nome = "Mario"; // errore in C
+        strcpy(s.nome, "Mario");
+        s.matricola=343536;
+    \end{lstlisting}
+    \item Classe in Java:
+    \begin{lstlisting}
+      class Studente {
+        public String nome;
+        public int matricola;
+      };
+      
+      Studente s = new Studente();
+      s.nome = "Mario";
+      s.matricola = 343536;
+    \end{lstlisting}
+\end{itemize}
+
+Sono memorizzabili e denotabili ma non possono essere definiti senza identificatore (solo in Ada). \\
+Le struct sono esprimibili \textbf{soltanto} in Scheme $\rightarrow$ liste con funzioni di accesso ai campi e 
+funzioni di test del valore del campo:
+
+\begin{lstlisting}
+  (define (book title authors) (list book title authors))
+  (define (book-title b) (car (cdr b)))
+  (define (book-? b) (eq? (car b) book))
+\end{lstlisting}
+
+I campi del record sono memorizzati sequenzialmente e sono allineati; \\
+Si possono disallineare ma l'accesso risulta più complesso $\rightarrow$ richiede l'assembler. \\
+Si possono riordinare i campi per risparmiare spazio ma bisogna preservare l'ordinamento nel tempo.
+
+\newpage
+
+\textbf{Record varianti e Union}
+
+\begin{itemize}
+  \item record in cui solo alcuni campi sono attivi in un determinato istante
+  \item alcuni campi sono alternativi tra loro $\rightarrow$  i campi alternativi possono condividere la stessa locazione di memoria
+  \item possibili varianti $\rightarrow$  alloco la dimensione massima che posso ottenere \\
+        a seconda della configurazione uso la locazione di memoria per rappresentare tipologie di dato differenti
+  \item rappresentazione:
+  \begin{lstlisting}
+    type studente = record
+    nome : packed array [1..6] of char;
+    matricola: integer;
+    case fuoricorso : Boolean of
+      true: (ultimoanno: 2020..maxint);
+      false:(anno:(primo,secondo,terzo);
+             inpari:Boolean;) end;
+    var s: studente;
+    s.fuoricorso := true;
+    s.ultimoanno:= 2021;
+\end{lstlisting}
+  \item i tipi unione possono essere utili per risparmiare spazio o per rappresentsre in modo naturale 
+        alcuni tipi come le liste o gli alberi binari (es: alberi con solo un sottoalbero) \\
+        in linguaggi come Rust i tipi unione vengono etichettati e viene definito il codice 
+        che gestisce ogni possibile opzione
+  \item con i tipi unione si possono aggirare controlli sul tipo:
+        \begin{lstlisting}
+          union Data {
+            int i;
+            float f;
+            char str[20];
+          } data;
+          float y;
+          ...
+          data.str = "abcd";
+          y = data.f;
+        \end{lstlisting}
+\end{itemize}
+
+\textbf{Array}
+\begin{itemize}
+  \item insiemi di dati omogenei contraddistinti da un indice (array di caratteri $\rightarrow$ stringhe) \\
+        possono anche essere multidimensionali, con più indici (array di array)
+  \item posso implementare l'operazione di selezione (A[i]) e in alcuni linguaggi 
+        posso anche avere lo slicing per selezionare parti contigue all'interno di un singolo array; \\
+        sono memorizzati in locazioni contigue (singola dimensione) oppure in ordine di riga/colonna (multidimensionali)
+  \item forma: 
+        \begin{itemize}
+          \item statica  $\rightarrow$ definita a compile time e fissata alla dichiarazione dell'array
+          \item dinamica  $\rightarrow$ varia durante l'esecuzione e usa il \textbf{Dope Vector}
+          \item Dope Vector  $\rightarrow$ descrittore che contiene: 
+          \begin{itemize}
+            \item puntatore all'inizio, limite inferiore e occupuazione di ogni dimensione dell'array
+            \item memorizzato nella parte fissa del record di attivazione 
+          \end{itemize}
+          \item accesso al vettore  $\rightarrow$ calcolo dell'indirizzo base a runtime usando le informazioni del Dope Vector
+        \end{itemize}
+\end{itemize}
+
+\newpage
+
+\end{flushleft}
+\end{document}
