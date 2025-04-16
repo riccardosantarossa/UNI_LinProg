@@ -137,10 +137,113 @@ Si possono riordinare i campi per risparmiare spazio ma bisogna preservare l'ord
             \item memorizzato nella parte fissa del record di attivazione 
           \end{itemize}
           \item accesso al vettore  $\rightarrow$ calcolo dell'indirizzo base a runtime usando le informazioni del Dope Vector
+          \item memorizzazione: 
+          \begin{itemize}
+            \item statica $\rightarrow$ nell' RdA
+            \item fissata alla dichiarazione $\rightarrow$ Dope Vector nella parte iniziale che punta il vettore $\rightarrow$ vettore in fondo
+            \item forma dinamica $\rightarrow$ heap, solo il dope vector si trova nell' RdA
+          \end{itemize}
+          \item memorizzazione in Java:
+          \begin{itemize}
+            \item gli arrai sono oggetti memorizzati nella heap
+            \item lo spazio viene allocato con una chiamata a new
+            \begin{lstlisting}
+              int[] vector = new int[DIM]; 
+            \end{lstlisting}
+          \end{itemize}
         \end{itemize}
+  \item sicurezza degli array:
+  \begin{itemize}
+    \item il controllo degl indici è dinamico ed è svolto solo da alcuni linguaggi
+    \item è importante per la \textbf{type safety} $\rightarrow$ potrei accedere a zone con tipo sbagliato
+    \item buffer overflow $\rightarrow$ tentativo di eseguire codice arbitrario cambiando gli indirizzi di ritorno
+  \end{itemize}
 \end{itemize}
 
-\newpage
+\medskip
+
+\textbf{Insiemi}
+
+\begin{itemize}
+  \item implementazione $\rightarrow$ vettori di booleani che definiscono la funzione caratteristica
+  \item le operazioni insiemistiche si ottengono con le operazioni booleane \textbf{bit wise}
+\end{itemize}
+
+\medskip
+
+\textbf{Puntatori}
+
+\begin{itemize}
+  \item identificano l-value ed indirizzi di memoria
+  \item tipo del puntatore $\rightarrow$ tipo dell'oggetto puntato 
+  \begin{lstlisting}
+     int *i; //puntatore ad intero
+  \end{lstlisting}
+  \item operazioni possibili: 
+  \begin{itemize}
+    \item creazione dell'oggetto puntato $\rightarrow$ funzioni di libreria
+    \item deferenziazione dell'oggetto
+    \item test di uguaglianza $\rightarrow$ uguali se puntano \textbf{esattamente} alla stessa locazione di memoria
+  \end{itemize}
+  \item in C i puntatori fanno riferimento allo stack con l'operatore \& (ritornano l'indirizzo)
+  \begin{lstlisting}
+    int i = 5;
+    p = &i; //ritorno l'indirizzo della variabile i
+  \end{lstlisting}
+  \item in C, array e puntatori son intercambiabili $\rightarrow$ il puntatore punta all'indirizzo base dell'array
+  \begin{lstlisting}
+    int n;
+    int *a; // puntatore a interi
+    int b[10]; // array di 10 interi
+    ...
+    a = b; // a punta a elemento iniziale di b
+    n = a[3]; // n ha il valore del terzo elemento di b
+    n = *(a+3); // idem
+    n = b[3]; // idem
+    n = *(b+3); // idem
+  \end{lstlisting}
+  \item aritmetica dei puntatori:
+  \begin{itemize}
+    \item la somma corrisponde alla somma di locazioni  $\rightarrow$  a $+$ 3 significa 3 locazioni intere in più di a
+    \item non ho alcuna garanzia di correttezza perchè posso accedere a zone arbitrarie di memoria
+  \end{itemize}
+  
+  \newpage
+  
+  \item utilizzo  $\rightarrow$  strutture dati ricorsive come alberi e liste concatenate:
+  \begin{lstlisting}
+    struct int_list {
+      int info;
+      struct int_list *next;
+    }
+    struct char_tree {     
+      char info;
+      struct char_tree *left, *right;
+    }
+  \end{lstlisting}
+
+  \item in Java non ci sono i puntatori $\rightarrow$ definisco direttamente il tipo ricorsivo (Java lavora per riferimento)
+  \item \textbf{Dangling Reference}: riferimento ad un'area di memoria che contiene dati non compatibili
+  \begin{itemize}
+    \item problema $\rightarrow$ deallocazione della heap e deallocazione di RdA
+    \item soluzioni $\rightarrow$ oggetti solo nella heap e \textbf{garbage collection}
+  \end{itemize}
+  \item \textbf{Garbage collection}: recupero di spazio di memoria heap 
+  \begin{itemize}
+    \item è più sicura della deallocazione esplicita
+    \item pesante da implementare $\rightarrow$ algoritmi complessi che rallentano l'esecuzione
+    \item In Rust:
+    \begin{itemize}
+      \item ownership $\rightarrow$ un dato appartiene ad una variabile $\rightarrow$ non ci sono heap condivisi
+      \begin{lstlisting}
+        let mascot = String::from("stringaEsempio");
+        let ferris = mascot.clone();
+        println!("{}", mascot) // Works
+      \end{lstlisting}
+      \item all'uscita di una procedura si recuperano i dati tramite l'ownership
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
 
 \end{flushleft}
 \end{document}
