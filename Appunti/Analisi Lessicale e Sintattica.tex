@@ -1,0 +1,215 @@
+\documentclass{article}
+\usepackage[top=1.5cm, bottom=1.5cm, left=1cm, right=1cm]{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+  frame=none,
+  language=c,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\normalsize\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\title{Analisi Lessicale e Sintattica}
+\author{R.S}
+
+\begin{document}
+\maketitle
+
+\section*{Grammatiche}
+
+\begin{itemize}
+  \item Formalismo nato per descrivere linguaggi
+  \item Permettono di generare frasi corrette \textbf{sintatticamente} corrette e programmi corretti
+  \item Componenti della grammatica:
+  \begin{itemize}
+    \item simboli terminali $\rightarrow$ insieme di simboli base di un linguaggio di programmazione $\rightarrow$ simboli di un alfabeto $\mathcal{A}$ 
+    \item simboli non terminali $\rightarrow$ identificatori, costanti, operazioni aritmetiche..
+    \item regole di generazione $\rightarrow$ modi di espandere un non terminale
+  \end{itemize}
+  \item Grammatiche BNF (Backus Naur Form) $\rightarrow$ i non terminali sono tra parentesi angolari
+  \item Alberi di derivazione e derivazioni:
+  \begin{itemize}
+    \item derivazione $\rightarrow$ come passare da un simbolo ad un altro o a una parola finale
+    \item albero di derivazione:
+    \begin{itemize}
+      \item rappresentazione \textbf{univoca} della derivazione $\rightarrow$ evidenzia la struttura del termine
+      \item radice $\rightarrow$ etichettata con il simbolo iniziale S
+      \item foglie $\rightarrow$ simboli terminali T
+      \item nodo interno $\rightarrow$ simboli non terminali, le sequenze di nodi sono le regole di derivazione 
+    \end{itemize}
+  \item Grammatica ambigua $\rightarrow$ esiste una stringa nella grammatica con due alberi di derivazione \textbf{differenti}
+  \item Disambiguazione di una grammatica:
+  \begin{enumerate}
+    \item inserire nuovi non terminali $\rightarrow$ genero lo stesso linguaggio ma con regole più complesse
+    \item fornire informazioni aggiuntive su come risolvere le ambiguità (es: ordine di precedenza degli operatori)
+  \end{enumerate}
+  \end{itemize} 
+  \item Abstract syntax tree: 
+  \begin{itemize}
+    \item albero sintattico senza nodi ridondanti
+    \item rappresentazione più compatta $\rightarrow$ computazione più efficiente
+    \item significato di una stringa evidenziato in maniera più chiara
+  \end{itemize}
+  \item \textbf{Classi} di grammatiche:
+  \begin{itemize}
+    \item struttura di frase: v $\rightarrow$ w
+    \item dipendenti dal contesto: uAv $\rightarrow$ uwv
+    \item libere dal contesto: A $\rightarrow$ w
+    \item lineari destre o sinistre (regolari): A $\rightarrow$ aB oppure A $\rightarrow$ a 
+  \end{itemize}
+  \item \textbf{Grammatiche regolari}
+  \begin{itemize}
+    \item classi di lessemi con struttura semplice
+    \item generalmente poco espressive
+  \end{itemize}
+  \item \textbf{Grammatiche libere dal contesto}
+  \begin{itemize}
+    \item compromesso tra espressività e complessità
+    \item riconoscimento in tempo lineare sulla lunghezza della stringa $\rightarrow$ uso di automi a pila
+    \item complessità accettabile per un compilatore
+    \item non posso eliminare alcuni vincoli sintattici come l'uguaglianza nel numero dei parametri
+  \end{itemize}
+\end{itemize}
+
+\newpage
+
+\section*{Analisi Lessicale}
+
+\begin{itemize}
+  \item Descrizione delle parti elementari del linguaggio (lessemi)
+  \item Utilizzo dei \textbf{lexer} $\rightarrow$ riconoscimento dei lessemi e costruzione di \textbf{token}
+  \item Token $\rightarrow$ la coppia [categoria sintattica, valore]
+  \item Sintassi espressa tramite \textbf{espressioni regolari}:
+  \begin{itemize}
+    \item permettono una rappresentazione sintetica dei linguaggi
+    \item esempi: 
+    \begin{itemize}
+      \item $a \mid b^* \rightarrow \{a, \epsilon, b, bb, ... \}$ 
+      \item $(0 \mid (1(01^*0)^*1))^* = \{ \epsilon, 0, 00, 11, 000, ...\}$ $\rightarrow$ multipli di 3 in binario
+    \end{itemize}
+    \item utilizzate per manipolare stringhe oppure come funzioni di libreria
+    \item espressioni regolari estese:
+    \begin{itemize}
+      \item chiusura positiva $\rightarrow  L^+ = LL^*$
+      \item zero oppure una istanza $\rightarrow  L? = \epsilon \mid L$
+      \item n concatenazioni $\rightarrow L^n = LLL..L$
+      \item uno tra i simboli $\rightarrow [acdz] = a \mid c \mid d \mid z$
+      \item range $\rightarrow [a-z] =  a \mid b \mid c \mid .. \mid z$
+    \end{itemize}
+    \item escaping:
+    \begin{itemize}
+      \item permette di usare i metacaratteri come carattere: $ \verb|\*|$ rappresenta il carattere $\ast$
+      \item rappresentare caratteri particolari come il newline: $\verb|\n|$
+    \end{itemize}
+  \end{itemize}
+  \item Costruzione di uno scanner:
+   \begin{itemize}
+    \item lo scanner deve dividere la stringa in lessemi usando le espressioni regolari
+    \item costruzione dell' \textbf{automa minimo} per ogni espressione regolare $\rightarrow$ automi in parallelo
+    \item riconoscimento di un lessema quando tutti gli automi terminano
+   \end{itemize}
+  \item Generatori di scanner:
+  \begin{itemize}
+    \item insieme di espressioni regolari $\rightarrow$ programma che riconosce i lessemi e genera token
+    \item in C si utilizza Lex $\rightarrow$ utilizzo di regole 
+    \item regole della forma (espressione regolare, istruzione in C):
+    \begin{lstlisting}
+      %%
+      aa printf("2a")
+      bb+ printf("many-b")
+      c printf("cc")
+      %%
+    \end{lstlisting}
+    \item variabili speciali nel lexer:
+    \begin{itemize}
+      \item yytext $\rightarrow$ contiene il lessema riconosciuto
+      \item yyleng $\rightarrow$ lunghezza del lessema
+      \item yyval $\rightarrow$ usata per passare parametri al parser
+    \end{itemize}
+    \item esempio completo:
+    \begin{lstlisting}
+      %{ int val = 0; %} //variabili del programma
+      
+      separatore [ \t\n] //definizione di un tipo di lessemi
+      
+      %%
+      //espressioni regolari e istruzioni da eseguire
+      0 {val = 2*val;}
+      1 {val = 2*val+1;}
+      {separatore} {printf("%d",val); val=0;}
+      %%
+  \end{lstlisting}
+  \end{itemize}
+\end{itemize}
+
+\newpage
+
+\section*{Analisi Sintattica}
+
+\begin{itemize}
+  \item Costruzione dell'albero di derivazione a partire dalla grammatica e dalla stringa di token
+  \item Automi \textbf{a pila}:
+  \begin{itemize}
+    \item automi con uso di memoria:
+    \begin{itemize}
+      \item uso di una pila in cui inserire gli elementi
+      \item computazione in base allo stato, alla testa della pila e all'input
+      \item si determinano il nuovo stato e i simboli da rimuovere oppure inserire nella pila
+    \end{itemize}
+    \item parola \textbf{accettata} $\rightarrow$ configurazione di accettazione: pila vuota e stato finale
+    \item automa a pila deterministico $\rightarrow$ riconoscimento in tempo lineare
+  \end{itemize}
+  \item Tipi di analizzatori sintattici (basati su automi a pila):
+  \begin{itemize}
+    \item LL(n):
+    \begin{itemize}
+      \item albero di derivazione $\rightarrow$ metodo \textbf{top down}
+      \item a partire dal simbolo iniziale si esaminano al più \textbf{n} simboli in avanti (lookahead)
+      \item uso di una tabella di parsing $\rightarrow$ simbolo in testa $+$ lookahead
+      \item funzionamento:
+      \begin{itemize}
+        \item espansione della pila $\rightarrow$ applicazione di una regola di riscrittura
+        \item consumo di un simbolo in input 
+        \item accettare la stringa oppure generare un segnale di errore
+      \end{itemize}
+      \item si esamina la stringa da sinistra a destra
+      \item derivazione LeftMost $\rightarrow$ ad ogni passo espando il simbolo non terminale più a sinistra
+    \end{itemize}
+    \item LR(n):
+    \begin{itemize}
+      \item approccio \textbf{bottom up}
+      \item stringa di input $\rightarrow$ applico le regole al contrario (contrazione) $\rightarrow$ contraggo tutto l'input
+      \item funzionamento:
+      \begin{itemize}
+        \item \textbf{shift} $\rightarrow$ inserisco un token nella pila
+        \item \textbf{reduce} $\rightarrow$ riduco la testa della pila applicando una contrazione
+        \item introduco nella pila una coppia (simbolo della grammatica, stato) $\rightarrow$ guardo la testa della pila e il lookahead 
+      \end{itemize}
+    \end{itemize}
+    \item LALR:
+    \begin{itemize}
+      \item compromesso tra numero di stati e varietà dei linguaggi riconosiuti
+      \item usati dai programmi generatori di parser (Yacc, Happy)
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\end{document}
