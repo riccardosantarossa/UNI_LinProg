@@ -1,0 +1,300 @@
+\documentclass{article}
+\usepackage[top=1.5cm, bottom=1.5cm, left=1cm, right=1cm]{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{multicol}
+
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+  frame=none,
+  language=C,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\normalsize\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\title{Nomi e Ambiente}
+\author{R.S}
+
+\begin{document}
+\maketitle
+
+\section*{Nomi}
+
+\begin{itemize}
+  \item Meccanismi di \textbf{astrazione} per rappresentare sinteticamente altre cose: valori, locazioni di memoria\dots
+  \item Nome $\rightarrow$ sequenza di caratteri identificativi:
+  \begin{lstlisting}
+    const pi = 3.14;
+    int x = pi + 1;
+    void f(){...};
+  \end{lstlisting}
+  \item Rappresentano oggetti \textbf{denotabili} $\rightarrow$ diversi nei vari linguaggi di programmazione
+\end{itemize}
+
+\section*{Binding e Ambiente}
+
+\begin{itemize}
+  \item Ambiente $\rightarrow$ insieme dei legami esistenti
+  \item Binding (legame) $\rightarrow$ associazione tra nome e oggetto denotabile
+  \item Creazione del binding:
+  \begin{itemize}
+    \item può venire creato in vari momenti $\rightarrow$ definizione, caricamento del programma, scrittura del codice \dots
+    \item binding \textbf{statico} $\rightarrow$ prima dell'esecuzione della prima istruzione
+    \item binding \textbf{dinamico} $\rightarrow$ durante l'esecuzione
+  \end{itemize}
+  \item Ambiente e store $\rightarrow$ definiscono il valore di una variabile
+  \begin{itemize}
+    \item ambiente $\rightarrow$ definisce la locazione di memoria che contiene la variabile
+    \item store $\rightarrow$ determina il dato effettivo
+    \item con i comandi modifico lo store, con le dichiarazioni modifico l'ambiente
+  \end{itemize}
+  \item Dichiarazione $\rightarrow$ meccanismo per creare un binding $\rightarrow$ modifica dell'ambiente
+  \begin{lstlisting}
+    int x = 0;
+    typedef int T;
+    int inc (T x) 
+    {
+      return x + 1;
+    }
+  \end{lstlisting}
+  \item Lo stesso nome può denotare oggetti differenti (es: tipi dinamici in Python)
+  \item Annidamento $\rightarrow$ annido diversi blocchi di codice $\rightarrow$ dichiarazione visibile nel blocco di definizione e negli annidati
+  \item \textbf{Suddivisione} dell'ambiente:
+  \begin{itemize}
+    \item ambiente locale $\rightarrow$ binding creati all'ingresso nel blocco $\rightarrow$ variabili \textbf{locali} e parametri \textbf{formali}
+    \item ambiente globale $\rightarrow$ dichiarazioni esplicite di varlabili globali oppure binding ottenuti da moduli
+  \end{itemize} 
+
+  \newpage
+
+  \item Operazioni sull'ambiente:
+  \begin{itemize}
+    \item \textbf{creazione} $\rightarrow$ associazione del nome ad un oggetto denotato (naming)
+    \item \textbf{distruzione} $\rightarrow$ in uscita dal blocco (unnaming)
+    \item \textbf{riferimento} $\rightarrow$ uso di un nome all'interno del codice per riferirsi ad un oggetto (referencing)
+  \end{itemize}
+  \item Tempo di vita dell'oggetto:
+  \begin{itemize}
+    \item può essere più lungo della vita del binding $\rightarrow$ oggetti chiamati prima e dopo l'esecuzione di una funzione
+    \begin{lstlisting}
+      int A;
+      void P(int *X){
+      ...
+      }
+      ...
+      P(&A);
+    \end{lstlisting}
+    \item può essere più breve della vita del binding $\rightarrow$ puntatore a memoria deallocata dinamicamente
+    \begin{lstlisting}
+      int *X, *Y, z;
+      X = (int *) malloc (sizeof (int));
+      Y = X;
+      *Y = 5;
+      free (X);
+      z = *Y;       
+    \end{lstlisting}
+  \end{itemize} 
+  \item \textbf{Dangling reference} $\rightarrow$ riferimento pendente che può causare errori
+\end{itemize}
+
+\section*{Regole di Scope}
+\begin{itemize}
+  \item Scope \textbf{statico} $\rightarrow$ nome non locale determinato dai blocchi che lo racchiudono (a partire dall'interno)
+  \begin{lstlisting}
+    int x = 0;
+    void foo (int n) {
+    x = x + n;
+    }
+    foo(2);
+    write(x);
+    { int x = 0;
+      foo (3);
+      write (x);
+    }
+    write (x);
+    //output del codice: "2" "0" "5"
+
+  \end{lstlisting}
+  \item Scope \textbf{dinamico} $\rightarrow$ nome non locale determinato dalla sequenza di blocchi attivi, a partire dal più recente
+  \begin{lstlisting}
+    int x = 0;
+    void foo (int n) {
+    x = x + n;
+    }
+    foo(2);
+    write(x);
+    { int x = 0;
+      foo (3);
+      write (x);
+    }
+    write (x);
+    //output del codice: "2" "3" "2"
+  \end{lstlisting}
+
+  \newpage
+
+\end{itemize}
+
+\section*{Scope Statico vs Dinamico}
+\begin{itemize}
+  \item Scope \textbf{statico} (lexical scoping):
+  \begin{itemize}
+    \item informazioni complete ricavabili dal testo del programma
+    \item binding effettuato a tempo di compilazione
+    \item complesso da implementare ma efficiente $\rightarrow$ usato in praticamente tutti i linguaggi moderni (C, Java, \dots)
+  \end{itemize}
+  \item Scope \textbf{dinamico}:
+  \begin{itemize}
+    \item informazione ricavata dall'esecuzione
+    \item flessibile $\rightarrow$ comportamento di una procedura facilmente modificabile
+    \item semplice da implementare ma meno efficiente $\rightarrow$ usato in R o Ruby
+  \end{itemize}
+  \item Python $\rightarrow$ si può usare una variabile senza dichiararla in precedenza $\rightarrow$ l'assegnazione comporta la dichiarazione
+  \begin{lstlisting}
+    def f():
+      write(x)
+    def g():
+      x = "local"
+      f()
+    x = "global"
+    g()
+    //stampa "global"
+  \end{lstlisting}
+\end{itemize}
+
+\section*{Aliasing e Overloading}
+\begin{itemize}
+  \item Aliasing $\rightarrow$ nomi diversi denotano lo stesso oggetto (parametri o puntatori)
+\end{itemize}
+
+  \begin{multicols}{2}
+    \begin{lstlisting}
+      //Passaggio di parametri
+      int x = 2;
+      int foo (ref int y)
+      {
+        y = y + 1;
+        x = x + y;
+      }
+      foo(x);
+      write (x);
+    \end{lstlisting}
+    \columnbreak 
+    \begin{lstlisting}
+      //Uso di puntatori
+      int *X, *Y;
+      X = (int *) malloc (sizeof (int));
+      *X = 0;
+      Y = X;
+      *Y = 1;
+      write (*X);
+    \end{lstlisting}
+  \end{multicols}
+
+\smallskip
+
+\begin{itemize}
+  \item Overloading $\rightarrow$ stesso nome usato con significati diversi a seconda del contesto
+  \item il $+$ è un esempio di overloading (somma tra interi $\mid$ concatenazione di stringhe)
+\end{itemize}
+
+\section*{Let in Scheme}
+\begin{itemize}
+  \item Let $\rightarrow$ dichiarazione attraverso diversi costrutti
+  \begin{itemize}
+    \item let $\rightarrow$  non ricorsivo, crea in blocco il nuovo ambiente
+    \item let$*$ $\rightarrow$  non ricorsivo, crea una serie di ambienti in modo sequenziale
+    \item letrec $\rightarrow$ dichiarazione ricorsiva e mutuamente ricorsiva
+  \end{itemize}
+\end{itemize}
+
+\begin{multicols}{2}
+  \begin{lstlisting}
+    //Output: 1
+    (let ((a 1))
+      (let ((a 2)
+          (b a))
+      b))
+  \end{lstlisting}
+  \columnbreak 
+  \begin{lstlisting}
+    //Output: 2
+    (let ((a 1))
+      (let* ((a 2)
+        (b a))
+      b))
+  \end{lstlisting}
+\end{multicols}
+
+\newpage
+
+\section*{Mutua ricorsione di tipi e funzioni}
+\begin{itemize}
+  \item Mutua ricorsione di funzioni:
+  \begin{itemize}
+    \item forza l'utilizzo di un nome \textbf{prima} che venga dichiarato
+    \item possibile se si permettono \textbf{eccezioni al vincolo}
+  \end{itemize}
+  \begin{lstlisting}
+    void f(){...g();} // g non ancora dichiarato
+    void g(){...f();}
+  \end{lstlisting}
+  \item Mutua ricorsione di tipo:
+  \begin{itemize}
+    \item posso definire un puntatore prima di aver definito il tipo puntato
+  \end{itemize}
+  \begin{lstlisting}
+    struct child {struct parent *pParent;}; //parent non ancora definito
+    struct parent {struct child *children[2];};
+  \end{lstlisting}
+\end{itemize}
+
+\section*{Dichiarazioni incomplete}
+\begin{itemize}
+  \item Dichiarazione incompleta di \textbf{tipo}:
+  \begin{itemize}
+    \item Dichiaro un tipo prima di averlo effettivamente definito:
+  \end{itemize}
+  \begin{lstlisting}
+    typedef struct child ch; //ch definito dopo
+    struct child {struct parent *pParent;};
+    struct parent {ch *children[2];}
+  \end{lstlisting}
+  \item Dichiarazione incompleta di \textbf{funzione}:
+  \begin{itemize}
+    \item La prima dichiarazione della funzione è incompleta $\rightarrow$ serve per capire tipo dei parametri e valore restituito
+  \end{itemize}
+  \begin{lstlisting}
+    void eval_parent(struct parent p); // solo dichiarazione
+    
+    void eval_child(ch c)
+    {
+      ...
+      eval_parent(p2);
+    }
+
+    void eval_parent(struct parent p) // definizione completa
+    { 
+      ...
+      eval_child(c2);
+    }
+  \end{lstlisting}
+\end{itemize}
+
+\end{document}
