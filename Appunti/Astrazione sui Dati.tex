@@ -44,9 +44,11 @@ In C e in Java si rappresentano come:
 \begin{itemize}
     \item Struct in C: 
     \begin{lstlisting}
-      struct studente {
+      struct studente 
+      {
         char nome[20];
-        int matricola; };
+        int matricola; 
+      };
         
         struct studente s;
         s.nome = "Mario"; // errore in C
@@ -55,7 +57,8 @@ In C e in Java si rappresentano come:
     \end{lstlisting}
     \item Classe in Java:
     \begin{lstlisting}
-      class Studente {
+      class Studente 
+      {
         public String nome;
         public int matricola;
       };
@@ -258,6 +261,147 @@ Si possono riordinare i campi per risparmiare spazio ma bisogna preservare l'ord
   \end{itemize}
 \end{itemize}
 
+\smallskip
+
+\section*{Equivalenza e compatibilità tra tipi}
+\begin{itemize}
+  \item Equivalenza: determina se due variabili hanno lo stesso tipo
+  \begin{itemize}
+    \item i tipi T ed S sono \textbf{equivalenti} se ongi variabile di tipo T è anche di tipo S
+  \end{itemize}
+  \item Equivalenza per \textbf{nome} $\rightarrow$ sono lo stesso identificatore di tipo
+  \begin{itemize}
+    \item si può richiedere nel passaggio di parametri
+    \begin{lstlisting}
+      //valido in C
+      int[4] sequenza = {0, 1, 2, 3};
+      void ordina (int[4] vett);
+      ...
+      ordina(sequenza)
+    \end{lstlisting}
+  \end{itemize}
+\end{itemize}
+
+\newpage
+
+\begin{itemize}
+  \item Equivalenza \textbf{Strutturale}:
+  \begin{itemize}
+    \item due tipi sono equivalenti se hanno la stessa struttura
+    \item se T è definito come $T = espressione$ allora T è equivalente a espressione
+    \item se costruisco due tipi con lo stesso \textbf{costruttore} allora sono equivalenti
+    \item esempio:
+    \begin{lstlisting}
+      //le struct A e B sono strutturalmente equivalenti
+      struct coppiaA {int i; float f};
+      struct A {int j; struct coppiaA c};
+      struct B {int j; struct coppiaB {int i; float f} c};
+    \end{lstlisting} 
+    \item equivalenza strutturale $\rightarrow$ basso livello $\rightarrow$ non rispetta l'astrazione
+  \end{itemize}
+\end{itemize}
+
+\begin{itemize}
+  \item \textbf{Compatibilità} di tipo $\rightarrow$ oggetti di tipo T possono essere usati dove ci si aspetta oggetti di tipo S
+  \begin{itemize}
+  \item esempio:
+  \begin{lstlisting}
+    //int e float sono compatibili
+    int n = 5
+    float r = 5.2;
+    r = r + n;
+  \end{lstlisting}
+  \end{itemize}
+  \item Due tipi \textbf{equivalenti} sono anche \textbf{compatibili} (sono intercambiabili)
+\end{itemize}
+
+\section*{Conversione di tipo (cast)}
+\begin{itemize}
+  \item Utilizzo di specifiche funzioni per convertire un tipo in un altro
+  \begin{lstlisting}
+    s = (S) t
+    r = (float) n;
+    n = (int) r;
+  \end{lstlisting}
+\end{itemize}
+
+\section*{Polimorfismo}
+\begin{itemize}
+  \item Polimorfismo \textbf{overloading}:
+  \begin{itemize}
+    \item uno stesso simbolo può denotare cose diverse a seconda del contesto
+    \item viene risolto a tempo di \textbf{compilazione} dopo l'inferenza di tipo
+    \item supportato in Java $\rightarrow$ classi e sottoclassi (ereditarietà)
+    \item definisco una funzione più volte $\rightarrow$ si sceglie quale usare tramite il numero e il tipo degli argomenti
+  \end{itemize}
+  \item Polimorfismo \textbf{parametrico}:
+  \begin{itemize}
+    \item si usa un parametro generico 
+    \item la funzione \textbf{polimorfa} ha un unico codice ma si può applicare a oggetti di tipo diverso
+    \begin{lstlisting}
+      identity(x) = x; : <T> -> <T>
+    \end{lstlisting}
+  \end{itemize}
+  \item Polimorfismo in Scheme:
+  \begin{itemize}
+    \item type checking dinamico $\rightarrow$ linguaggio naturalmente polimorfo
+    \item esempio $\rightarrow$ la funzione MAP
+    \begin{lstlisting}
+      (map f list) //mappo la funzione f su tutta la lista
+      (T -> S) -> (list T) -> (list S)
+    \end{lstlisting}
+  \end{itemize}
+  \newpage
+  \item Polimorfismo parametrico \textbf{esplicito}:
+  \begin{itemize}
+    \item in C++ si usano le funzioni template
+  \begin{lstlisting}
+    //dichiarazione del tipo generico T
+    template <typename T>
+    void swap (T& x, T& y){
+      T tmp = x; 
+      x=y; 
+      y=tmp;
+    }
+  \end{lstlisting}
+    \item l'istanziazione del tipo giusto è automatica
+    \begin{lstlisting}
+      int i,j; swap(i,j); //T diventa int a link-time
+      float r,s; swap(r,s); //T diventa float a link time
+      String v,w; swap(v,w); //T diventa String a link time
+    \end{lstlisting}
+    \item in Java si usano i tipi generici:
+    \begin{lstlisting}
+      //si usa per qualunque tipo di Array (char, int, ...)
+      public static < E > void printArray( E[] inputArray ) {
+        for(E element : inputArray) {
+            System.out.printf("%s ", element);
+        }
+      }
+    \end{lstlisting} 
+  \end{itemize} 
+  \item Polimorfismo di \textbf{sottotipo}:
+  \begin{itemize}
+    \item basato sul fatto che un sottotipo condivide tutte le proprietà del suo tipo padre
+    \item può essere combinato con il polimorfismo parametrico:
+    \begin{itemize}
+      \item solo il sottotipo: select: D$[]$ $\rightarrow$ D (restituisce sempre di tipo D)
+      \item combinando i due: $\forall$ T $ [] \rightarrow T$ (per tutti i sottotipi di T)
+    \end{itemize}
+    \item nei linguaggi ad oggetti creo le classi generiche:
+    \begin{lstlisting}
+      void quickSort( E[] inputArray)
+      void quickSort( E[] inputArray, (E*E)->Bool compare) //devo passare le funzioni ausiliarie
+
+      //Uso quindi una typeclass che contengono le funzioni necessarie
+      class S
+      {
+        bool compare (x, y : S)
+      }
+      void quickSort(S[] inputArray)
+    \end{lstlisting}
+  \end{itemize}
+\end{itemize}
 
 \end{flushleft}
 \end{document}
