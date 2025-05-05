@@ -107,36 +107,36 @@ int numConversion(char *num, int b)
 	  case '0':
 	  break;
 
-      //Codifica dei caratteri esadecimali letterali
-      case 'a':
-      case 'A':
-        val = val + 10;
-      break;
+    //Codifica dei caratteri esadecimali letterali
+    case 'a':
+    case 'A':
+      val = val + 10;
+    break;
 
-      case 'b':
-      case 'B':
-        val = val + 11;
-      break;
+    case 'b':
+    case 'B':
+      val = val + 11;
+    break;
 
-      case 'c':
-      case 'C':
-        val = val + 12;
-      break;
+    case 'c':
+    case 'C':
+      val = val + 12;
+    break;
 
-      case 'd':
-      case 'D':
-        val = val + 13;
-      break;
+    case 'd':
+    case 'D':
+      val = val + 13;
+    break;
 
-      case 'e':
-      case 'E':
-        val = val + 14;
-      break;
+    case 'e':
+    case 'E':
+      val = val + 14;
+    break;
 
-      case 'f':
-      case 'F':
-        val = val + 15;
-      break;       
+    case 'f':
+    case 'F':
+      val = val + 15;
+    break;       
     }
   }
    return val;
