@@ -68,75 +68,75 @@ int numConversion(char *num, int b)
     val = val * b;
     switch(num[i])
     {
-          case '1':
-		val += 1;
-	  break;
+      case '1':
+      val += 1;
+      break;
 
-	  case '2':
-		val += 2;
-	  break;
-	  
-	  case '3':
-		val += 3;
-	  break;
-	  
-	  case '4':
-		val += 4;
-	  break;
-	  
-	  case '5':
-		val += 5;
-	  break;
-	  
-	  case '6':
-		val += 6;
-	  break;
-	  
-	  case '7':
-		val += 7;
-	  break;
-	  
-	  case '8':
-		val += 8;
-	  break;
-	  
-	  case '9':
-		val += 9;
-	  break;
-	  
-	  case '0':
-	  break;
+      case '2':
+      val += 2;
+      break;
+      
+      case '3':
+      val += 3;
+      break;
+      
+      case '4':
+      val += 4;
+      break;
+      
+      case '5':
+      val += 5;
+      break;
+      
+      case '6':
+      val += 6;
+      break;
+      
+      case '7':
+      val += 7;
+      break;
+      
+      case '8':
+      val += 8;
+      break;
+      
+      case '9':
+      val += 9;
+      break;
+      
+      case '0':
+      break;
 
-    //Codifica dei caratteri esadecimali letterali
-    case 'a':
-    case 'A':
-      val = val + 10;
-    break;
+      //Codifica dei caratteri esadecimali letterali
+      case 'a':
+      case 'A':
+        val = val + 10;
+      break;
 
-    case 'b':
-    case 'B':
-      val = val + 11;
-    break;
+      case 'b':
+      case 'B':
+        val = val + 11;
+      break;
 
-    case 'c':
-    case 'C':
-      val = val + 12;
-    break;
+      case 'c':
+      case 'C':
+        val = val + 12;
+      break;
 
-    case 'd':
-    case 'D':
-      val = val + 13;
-    break;
+      case 'd':
+      case 'D':
+        val = val + 13;
+      break;
 
-    case 'e':
-    case 'E':
-      val = val + 14;
-    break;
+      case 'e':
+      case 'E':
+        val = val + 14;
+      break;
 
-    case 'f':
-    case 'F':
-      val = val + 15;
-    break;       
+      case 'f':
+      case 'F':
+        val = val + 15;
+      break;       
     }
   }
    return val;
