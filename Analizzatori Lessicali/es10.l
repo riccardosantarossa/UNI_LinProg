@@ -5,13 +5,12 @@
 
 char* InfToPart(char *input, char *buf, int con);
 char* PartToInf(char *input, char *buf);
-
 %}
 
 radice [a-zA-z]+
 primaCon {radice}are
-secondaCon{radice}ere
-terzaCon{radice}ire
+secondaCon {radice}ere
+terzaCon {radice}ire
 verboParticipio {radice}ato|{radice}ito|{radice}uto
 
 %%
