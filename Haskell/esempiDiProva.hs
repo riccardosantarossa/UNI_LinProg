@@ -1,25 +1,24 @@
 --esempi di prova
 
 --funzione fattoriale
-fact f =
-    if f <= 1 then
-        1
-    else
-        f * fact (f-1)
+fact :: Int -> Int
+fact 0 = 1
+fact n = fact(n - 1) * n 
 
 --coefficiente binomiale
+binom :: Int -> Int -> Int
 binom n k =
-    fact n / (fact k * fact (n-k))
-
+    div (fact n) (fact k * fact (n-k))
 
 --lista di combinazioni
---binomListMAP num = 
-   --TODO
+binomMap :: Int -> [Int]
+binomMap n = map (binom n) [0..n]
 
---binomListREC num lst =
+binomRec :: Int -> [Int]
+binomRec 0 = [1]
+binomRec n = bnRec n 0 
+    where
+        bnRec n k
+            | k > n = []
+            | otherwise = binom n k : bnRec n (k+1)
     
-main = do
-    --print (fact 5)
-    --print (binom 5 3)
-    --print (binomListMAP 5)
-    --print binomList
