@@ -1,11 +1,10 @@
 
-matrix_dim :: [[Int]] -> (Int, Int)
-matrix_dim [] = (0,0)
-matrix_dim (r:rs)
-    | stessaLunghezza (r:rs) = (length (r:rs), length r)
-    | otherwise (-1,-1)
-    where
-      stessaLunghezza [] = True
-      stessaLunghezza [x] = True
-      stessaLunghezza (x:y:xs) = length x == length y && stessaLunghezza (y:xs)
+--1. controlla se tutte le righe della matrice (lista di liste) hanno la stessa lunghezza
+--TODO
+
+--2. calcola il vettore della somma dei valori delle colonne della matrice (M memorizzata per colonne come lista di liste)
+colSums :: [[Int]] -> [Int]
+colSums xss = map sum xss
+
+
 
