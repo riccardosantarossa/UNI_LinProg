@@ -32,3 +32,10 @@ minOdd (x:y:xs)
             | odd x = (first, x)
             | otherwise = minOdd' first xs
 
+
+--costruisce una lista di coppie con l'elemento e la somma di tutti gli elementi dopo di lui
+pairedSum :: [Int] -> [(Int, Int)]
+pairedSum [] = [(0,0)]
+pairedSum [x] = [(x,0)]
+pairedSum (x:xs) = [(x, foldr (+) 0 xs)] ++ pairedSum xs
+
