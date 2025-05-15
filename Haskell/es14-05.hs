@@ -1,10 +1,8 @@
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# HLINT ignore "Use foldr" #-}
-{-# HLINT ignore "Redundant bracket" #-}
 
 --LISTA PRODOTTO CARTESIANO DI DUE LISTE
 
 --versione listComprehension
+coppie :: [a] -> [b] -> [(a, b)]
 coppie xs ys = [(x,y) | x <- xs, y <- ys]
 
 --versione Monadi
@@ -14,12 +12,12 @@ coppie2 xs ys = do
         return (x,y)
 
 --soluzione ricorsiva semplice
-{-
+
 coppieRec [] ys = []
-coppieRec [x:xs] ys = coppieAux x ys ++ coppieRec xs ys 
+coppieRec (x:xs) ys = coppieAux x ys ++ coppieRec xs ys 
 	where coppieAux x [] = []
-	      coppieAux x [y:ys] = (x,y) : coppieAux x ys
--}
+	      coppieAux x (y:ys) = (x,y) : coppieAux x ys
+
 
 --soluzione con folding
 coppieFold xs ys = foldr (\ x zs -> (map (\ y -> (x,y)) ys) ++ zs) [] xs
