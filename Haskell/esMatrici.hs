@@ -31,3 +31,5 @@ colMinMax = getMinMax . extractCols
 trasp:: [[Int]] -> [[Int]]
 trasp ([]:_) = []
 trasp xss = map head xss : trasp (map tail xss)
+
+-----------------------------------------------------------------
