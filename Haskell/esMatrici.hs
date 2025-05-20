@@ -1,6 +1,6 @@
 
 --1. controlla se tutte le righe della matrice (lista di liste) hanno la stessa lunghezza
---TODO
+matrixDim :: [[Int]] -> (Int,Int)
 
 -----------------------------------------------------------------
 
