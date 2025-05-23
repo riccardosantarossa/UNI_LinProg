@@ -174,7 +174,113 @@
   \end{itemize}
 \end{itemize}
 
-\section*{Clausole defnite e generali}
+\section*{Predicato append in PROLOG}
+\begin{itemize}
+  \item Si vuole definire un predicato \textbf{append} tale che $append(L_1, L_2, Result)$ sia oddisfatto quando Result è la concatenazione
+        di $L_1$ e $L_2$
+  \item Definizione del predicato:
+   \begin{itemize}
+    \item caso base $\rightarrow$ concatenare una lista vuota a Ys
+    \item caso ricorsivo $\rightarrow$ aggiungere X in testa e ricorsione su Xs
+  \end{itemize}
+  \begin{lstlisting}
+    append([], Ys, Ys) . append([X|Xs], Ys, [X|Xs]) :- append(Xs, Ys, Zs)
+  \end{lstlisting}
+ \end{itemize}
 
+ \newpage
+
+ \section*{Non determinismo e aspetti di controllo}
+\begin{itemize}
+  \item I programmi logici sono \textbf{non deterministici} $\rightarrow$ non specificato ordine di applicazione delle 
+        clausole
+  \item Semantica logica indipendente dal controllo $\rightarrow$ strategie diverse portano a stessi risultati
+  \item ProLog $\rightarrow$ non determinisimo gestito dall'interprete:
+  \begin{itemize}
+    \item clausole provate nell'ordine in cui appaiono nel codice
+    \item atomi delle regole valutati da sinistra a destra
+  \end{itemize}
+  \begin{lstlisting}
+    p(X) :- a(X).
+    p(x) :- b(X), c(X).
+    //valutato prima a(X), poi b(X)
+    //se a(X) diverge allora tutto il programma diverge
+  \end{lstlisting}
+\end{itemize}
+
+\section*{Operatore CUT (!)}
+\begin{itemize}
+  \item Elimina le alternative del backtracking $\rightarrow$ rende la computazione deterministica da quel momento
+  \begin{lstlisting}
+  //esempio di uso del CUT
+  max(X, Y, X) :- X >= Y, !
+  max(_, Y, Y).
+  //se il >= risulta vero il cut non considera la seconda regola
+  \end{lstlisting}
+  \item Vantaggi:
+  \begin{itemize}
+    \item efficienza migliorata $\rightarrow$ meno operazioni di backtracking
+    \item controllo esplicito e deterministico sul comportamento del programma
+  \end{itemize}
+  \item Svantaggi:
+  \begin{itemize}
+    \item la purezza logica è compromessa
+    \item ragionamento dichiarativo complicato $\rightarrow$ male necessario
+  \end{itemize}
+\end{itemize}
+
+\section*{Funzioni predefinite in PROLOG}
+\begin{itemize}
+  \item Sono le operazioni aritmetiche di base e l'operazione \textbf{is} e i predicati speciali (assert, write, read, retract)
+  \item L'operatore is forza la valutazione di un'espressione:
+  \begin{lstlisting}
+    five(X) :- X is 2+3
+    five(X) :- X = 2+3
+  \end{lstlisting}
+  \item Le funzioni predefinite sono semplici nella dichiarazione ma \textbf{inefficienti computazionalmente}
+  \item Possibili ottimizzazioni:
+  \begin{itemize}
+    \item uso intelligente delle clausole e dei predicati ottimizzati
+    \item riduzione dello spazio di ricerca utilizzando il \textbf{cut}
+  \end{itemize}
+\end{itemize}
+
+\newpage
+
+\section*{Programmazione con vincoli (CLP)}
+\begin{itemize}
+  \item Estensione della programmazione logica $\rightarrow$ maggiore efficienza per certi problemi
+  \item Gestione \textbf{esplicita} di vincoli:
+  \begin{itemize}
+    \item vincoli \textbf{numerici} $\rightarrow$ CLP(R), CLP(Q)
+    \item vincoli su insiemi finiti $\rightarrow$ CLP(FD)
+    \item esempio:
+    \begin{lstlisting}
+      X + Y #= 10, X #> 0, Y #> 0
+    \end{lstlisting}
+  \end{itemize}
+\end{itemize}
+
+\section*{Vantaggi e Svantaggi del paradigma logico}
+\begin{itemize}
+  \item Vantaggi:
+  \begin{itemize}
+    \item programmi chiari, semplici e \textbf{dichiarativi}
+    \item adatto a problemi di ricerca, IA e scheduling/ottimizzazione
+    \item separazione tra logica e istruzioni di controllo
+  \end{itemize}
+  \item Svantaggi:
+  \begin{itemize}
+    \item potenziale inefficienza computazionale
+    \item gestione del controllo complessa se senza esperienza
+    \item difficoltà di \textbf{debugging} rispetto ai classici linguaggi imperativi
+  \end{itemize}
+  \item Conclusioni:
+  \begin{itemize}
+    \item approccio alternativo alla programmazione 
+    \item utile per modellare problemi complessi in modo dichiarativo
+    \item integra altri paradigmi nelle situazioni adatte
+  \end{itemize}
+\end{itemize}
 
 \end{document}
