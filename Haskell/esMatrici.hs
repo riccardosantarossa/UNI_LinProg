@@ -1,6 +1,17 @@
 
 --1. controlla se tutte le righe della matrice (lista di liste) hanno la stessa lunghezza
-matrixDim :: [[Int]] -> (Int,Int)
+{-matrixDim :: [[Int]] -> (Int,Int)
+matrixDim [[]] = (0,0)
+matrixDim [[xs]] = (1, length [xs])
+matrixDim (xs:xss) = matrixDim1 xss 1
+    where
+        matrixDim1 (ys:yss) row = (row, length [ys]) : matrixDim1 (row +1) yss -}
+
+matrixDim :: [[Int]] -> (Int, Int)
+matrixDim [] = (0, 0)
+matrixDim xs
+  | null (head xs) = (length xs, 0)
+  | otherwise      = (length xs, length (head xs))
 
 -----------------------------------------------------------------
 
