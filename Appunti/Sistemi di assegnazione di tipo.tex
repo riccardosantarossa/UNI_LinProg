@@ -1,0 +1,133 @@
+\documentclass[12pt]{extarticle}
+\usepackage[top=1.5cm, bottom=1.5cm, left=1cm, right=1cm]{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{multicol}
+\usepackage{bussproofs}
+
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+  frame=none,
+  language=C,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\normalsize\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\title{Sistemi di assegnazione di tipo}
+\author{R.S}
+
+\begin{document}
+\maketitle
+
+\section*{Sistema di tipi}
+\begin{itemize}
+  \item Definizione del controllo di tipi $\rightarrow$ regole di \textbf{derivazione} del tipo:
+  \begin{itemize}
+    \item $x_1:A_1, x_2:A_2, \dots, x_n:A_n \vdash M:A$
+    \item l'\textbf{ambiente} viene definito con G ($\Gamma$)
+  \end{itemize}
+\end{itemize}
+
+\section*{Derivazioni e regole di derivazione}
+\begin{itemize}
+  \item Utilizzo di premesse $\rightarrow$ simile alla deduzione naturale: 
+  \begin{flushleft}
+    \(
+        \displaystyle
+        \frac{G_1 \vdash M_1 : A_1 \quad \cdots \quad G_n \vdash M_n : A_n}
+        {G \vdash M : A}\)
+  \end{flushleft}
+  \item Regole di derivazione:
+  \begin{itemize}
+    \item regole senza premesse $\rightarrow$ assiomi
+    \item regole date per \textbf{induzione sulla struttura} di M $\rightarrow$ ogni costrutto ha la sua regola
+    \item linguaggio più ricco $\rightarrow$ approccio modulare con più regole
+  \end{itemize}
+  \item Derivazioni:
+  \begin{itemize}
+    \item struttura ad \textbf{albero} $\rightarrow$ derivo i giudizi validi
+  \end{itemize}
+\end{itemize}
+
+\section*{Type Checking e Inference}
+\begin{itemize}
+  \item Diversi problemi di un sistema di tipo: controllo, inferenza e analisi semantica
+  \item Type \textbf{Checking}:
+  \begin{itemize}
+    \item dati un termine M, un tipo A e un ambiente $\Gamma$ $\rightarrow$ determinare se $\Gamma \vdash M:A$
+  \end{itemize}
+  \item Type \textbf{Inference}:
+  \begin{itemize}
+    \item dato un termine M ed un ambiente $\Gamma$ $\rightarrow$ trovare un tipo A tale che $\Gamma \vdash M:A$ sia valido
+  \end{itemize}
+  \item Analisi semantica:
+  \begin{itemize}
+    \item risolve problemi di type inference
+    \item nel codice si definisce il tipo della variabile $\rightarrow$ necessario inferire sulle sotto-espressioni
+  \end{itemize}
+\end{itemize}
+
+\newpage
+
+\section*{Sistemi di tipo al primo ordine}
+\begin{itemize}
+  \item Primo ordine $\rightarrow$ non ci sono tipi polimorfi
+  \item Sistema definito $\rightarrow$ F1 (lambda calcolo tipato)
+  \begin{itemize}
+    \item linguaggio funzionale minimale con costanti, lambda-astrazioni e applicazione di funzione
+    \item costante $\rightarrow$ C
+    \item astrazioni $\rightarrow$ $\lambda x:A.$ $M$
+    \item applicazione di funzione $\rightarrow$ M N
+  \end{itemize}
+  \item Regole di derivazione dei tipi:
+  \begin{itemize}
+    \item Variabile: $G, x:A, G' \vdash x:A$
+    \item Lambda Astrazione: 
+    \begin{flushleft}
+    \hspace*{7em}
+    \(
+        \displaystyle
+        \frac
+        {G, x:A \vdash M:B}
+        {G \vdash (\lambda x:A. M) : A \rightarrow B }
+    \)
+  \end{flushleft}
+  \item Applicazione di funzione:
+  \begin{flushleft}
+   \hspace*{7em}
+    \(
+        \displaystyle
+        \frac
+        {G \vdash M : A \rightarrow B \qquad G \vdash N:A}
+        {G \vdash (\lambda x:A. M) : A \rightarrow B }
+    \)
+  \end{flushleft}
+  \end{itemize}
+\end{itemize}
+
+\section*{Costruzione della derivazione}
+\begin{itemize}
+  \item Costruzione top-down: seleziono la regola da applicare $\rightarrow$ riduco il problema ai sottotermini
+  \item Ad ogni passaggio:
+  \begin{itemize}
+    \item selezione della regola $\rightarrow$ osservo il costrutto principale
+    \item istanziare lo schema di regole $\rightarrow$ meccanismo simile al pattern matching
+  \end{itemize}
+\end{itemize}
+\end{document}
