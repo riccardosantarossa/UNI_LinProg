@@ -1,0 +1,99 @@
+\documentclass[12pt]{extarticle}
+\usepackage[top=1.5cm, bottom=1.5cm, left=1cm, right=1cm]{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{multicol}
+
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+  frame=none,
+  language=C,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\normalsize\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\title{Programmazione Concorrente}
+\author{R.S}
+
+\begin{document}
+\maketitle
+
+\section*{Tipologie di concorrenza}
+
+\begin{itemize}
+    \item Concorrenza \textbf{fisica}
+    \begin{itemize}
+        \item esecuzione simultanea di istruzioni
+        \item comprende diversi gradi di granularità:
+        \begin{itemize}
+            \item parallelismo a livello di istruzioni
+            \item parllalismo a livello di processo $\rightarrow$ multicore
+            \item computazione vettoriale $\rightarrow$ GPU
+            \item reti di calcolatori
+        \end{itemize}
+    \end{itemize}
+    \item Concorrenza \textbf{logica}
+    \begin{itemize}
+        \item programmazione parallela:
+        \begin{itemize}
+            \item parallelizzazione dell'esecuzione di un singolo problema 
+            \item algoritmi specifici per il parallelismo
+        \end{itemize}
+        \item programmazione multithreaded:
+        \begin{itemize}
+            \item più processi attivi \textbf{contemporaneamente} sulla stessa macchina fisica
+            \item memoria condivisa oppure con scambio di messaggi 
+        \end{itemize}
+        \item programmazione distribuita
+        \begin{itemize}
+            \item programmi \textbf{concorrenti} eseguiti su macchine separate
+            \item memoria indipendente per ogni nodo della rete
+        \end{itemize}
+    \end{itemize}
+    \item Cloud Computing
+    \begin{itemize}
+        \item insieme di tecnologie che permettono lo sviluppo di applicazioni \textbf{distribuite} sul web
+        \item accesso on demand con risorse distribuite configurabili a richiesta
+    \end{itemize}
+\end{itemize}
+
+\newpage
+
+\section*{Metodi e aspetti della programmazione concorrente}
+
+\begin{itemize}
+    \item Parallelismo con librerie
+    \begin{itemize}
+        \item utilizzo di un linguaggio sequenziale
+        \item threads con chiamate a funzioni di libreria $\rightarrow$ C e POSIX threads
+    \end{itemize}
+    \item Aspetti della programmazione concorrente
+    \begin{itemize}
+        \item comunicazione $\rightarrow$ i thread si scambiano informazioni
+        \item sincronizzazione $\rightarrow$ regolazione della velocità relativa (scheduler)
+    \end{itemize}
+\end{itemize}
+
+\section*{Thread e processi}
+
+\begin{itemize}
+    \item 
+\end{itemize}
+
+\end{document}
