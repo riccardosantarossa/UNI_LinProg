@@ -5,40 +5,45 @@
 
 char* InfToPart(char *input, char *buf, int con);
 char* PartToInf(char *input, char *buf);
+
 %}
 
-radice [a-zA-z]+
-primaCon {radice}are
-secondaCon {radice}ere
-terzaCon {radice}ire
-verboParticipio {radice}ato|{radice}ito|{radice}uto
-
-%%
-primaCon  {
-            char *buf = malloc(yyleng*sizeof(char));
-            printf("%s\n", InfToPart(yytext, buf, 1));
-            free(buf);
-          }
-
-secondaCon  {
-              char *buf = malloc(yyleng*sizeof(char));
-              printf("%s\n", InfToPart(yytext, buf, 2));
-              free(buf);
-            }
-
-terzaCon  {
-            char *buf = malloc(yyleng*sizeof(char));
-            printf("%s\n", InfToPart(yytext, buf, 3));
-            free(buf);
-          }
-
-verboParticipio {
-                  char *buf = malloc(yyleng * sizeof(char));
-                  printf("%s\n", PartToInf(yytext, buf));
-                  free(buf);
-                }
 %%
 
+accendere {printf("%s\n", "acceso");}
+
+chiedere {printf("%s\n", "chiesto");}
+
+coprire {printf("%s\n", "coperto");}
+
+offeso {printf("%s\n", "offendere");}
+
+fritto {printf("%s\n", "friggere");}
+
+[a-zA-Z]+are  {
+                char *buf = malloc(yyleng*sizeof(char) + 5);
+                printf("%s\n", InfToPart(yytext, buf, 1));
+                free(buf);
+              }
+
+[a-zA-Z]+ere  {
+                char *buf = malloc(yyleng*sizeof(char) + 5);
+                printf("%s\n", InfToPart(yytext, buf, 2));
+                free(buf);
+              }
+
+[a-zA-Z]+ire  {
+                char *buf = malloc(yyleng*sizeof(char) + 5);
+                printf("%s\n", InfToPart(yytext, buf, 3));
+                free(buf);
+              }
+
+[a-zA-Z]+(ito|ato|uto) {
+                         char *buf = malloc(yyleng * sizeof(char) + 5);
+                         printf("%s\n", PartToInf(yytext, buf));
+                         free(buf);
+                       }
+%%
 
 void yyerror(const char *str){fprintf(stderr, "errore: %s\n", str);}
 
@@ -52,7 +57,7 @@ char* InfToPart(char *input, char *buf, int con)
 
   //Sostituisce la coniugazione all'infinito con quella al participio presente
   strncpy(buf, input, strlen(input) - 3);
-  buf[strlen(buf) - 1] = '\0';
+  buf[strlen(input)] = '\0';
 
   if(con == 1)
     strcat(buf, suff);
@@ -64,24 +69,17 @@ char* InfToPart(char *input, char *buf, int con)
 
 char* PartToInf(char *input, char *buf)
 {
-   //Salvo la desinenza del participio
-   char *des = malloc(4 * sizeof(char));
-   strncpy(des, input + (strlen(input) - 3), 3);
-   des[3] = '\0';
-   
-   //Rimuovo le ultime la desinenza dall'input e aggiungo la 
-   //coniugazione corretta 
+   //Elimino la coniugazione del participio
    strncpy(buf, input, strlen(input) - 3);
-   buf[strlen(buf) - 1] = '\0';
+   buf[strlen(input) - 3] = '\0';
 
-   if(strcmp(des, "ato") == 0)
-    strcat(buf, "are\0");
-   else if(strcmp(des, "uto") == 0)
-    strcat(buf, "ere\0");
+   //Sostituisco con l'infinito corretto
+   if(strstr(input, "ato"))
+     strcat(buf, "are");
+   else if(strstr(input, "uto"))
+     strcat(buf, "ere");
    else
-    strcat(buf, "ire\0");
-
-   free(des);
+     strcat(buf, "ire");
 
    return buf; 
 }
