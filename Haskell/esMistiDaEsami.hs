@@ -18,7 +18,7 @@ data (Ord a, Eq a) => Tree a = Nil | Node (Tree a) a (Tree a)
 countBst :: (Num a, Ord t) => t -> Tree t -> a
 countBst x Nil = 0
 countBst x (Node lf v rt)
-    | (x == v) = 1 + countBst x lf + countBst x rt
+    | x == v = 1 + countBst x lf + countBst x rt
     | otherwise = 0 + countBst x lf + countBst x rt
 
 
@@ -38,16 +38,16 @@ mergeLists (x:xs) (y:ys)
 --dato un intero n costruire una matrice n*n di soli 0 e 1 alternati a scacchiera
 
 rowStartZero :: Int -> [Int]
-rowStartZero n 
+rowStartZero n
  | (n == 0) = []
- | even n = [1] ++ rowStartZero (n-1)
- | otherwise = [0] ++ rowStartZero (n-1)
+ | even n = 1 : rowStartZero (n-1)
+ | otherwise = 0 : rowStartZero (n-1)
 
 rowStartOne :: Int -> [Int]
-rowStartOne n 
+rowStartOne n
  | (n == 0) = []
- | even n = [0] ++ rowStartOne (n-1)
- | otherwise = [1] ++ rowStartOne (n-1)
+ | even n = 0 : rowStartOne (n-1)
+ | otherwise = 1 : rowStartOne (n-1)
 
 --costruisce la matrice supponendo sia memorizzata per righe e che in posizione [1,1] vi sia uno 0
 matrixOneZero :: Int -> [[Int]]
@@ -56,7 +56,27 @@ matrixOneZero n = matrixAux n n
 matrixAux :: Int -> Int -> [[Int]]
 matrixAux n k
  | (k == 0) = []
- | even k = [rowStartOne n] ++ matrixAux n (k-1)
- | otherwise = [rowStartZero n] ++ matrixAux n (k-1)
+ | even k = rowStartOne n : matrixAux n (k-1)
+ | otherwise = rowStartZero n : matrixAux n (k-1)
 
+
+--esame 02/07/2019 
+--data una matrice quadrata memorizzata per righe togliere prima riga e prima colonna
+
+getSubmatrix:: [[Int]] -> [[Int]]
+getSubmatrix = removeFirstColumn . removeFirstRow 
+
+removeFirstRow:: [[Int]] -> [[Int]]
+removeFirstRow xss = drop 1 xss 
+
+removeFirstColumn:: [[Int]] -> [[Int]]
+removeFirstColumn xss = map (drop 1) xss
+
+--estrarre gli elementi della diagonale da una matrice quadrata memorizzata per righe
+getDiag:: [[Int]] -> [Int]
+getDiag m = getDiagAux m 0
+
+getDiagAux:: [[Int]] -> Int -> [Int]
+getDiagAux [] _ = []
+getDiagAux (xs:xss) idx = (xs !! idx) : getDiagAux xss (idx + 1)
 
