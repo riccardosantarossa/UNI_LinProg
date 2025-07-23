@@ -1,4 +1,6 @@
 {-# LANGUAGE DatatypeContexts #-}
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Redundant bracket" #-}
 
 
 --27/06/2018
@@ -24,7 +26,6 @@ countBst x (Node lf v rt)
 
 --09/09/2019
 --unire due liste ordinate creando una lista ordinata senza ripetizioni
-
 mergeLists :: Ord a => [a] -> [a] -> [a]
 mergeLists [] ys = ys
 mergeLists xs [] = xs
@@ -36,7 +37,6 @@ mergeLists (x:xs) (y:ys)
 
 --19/09/2018
 --dato un intero n costruire una matrice n*n di soli 0 e 1 alternati a scacchiera
-
 rowStartZero :: Int -> [Int]
 rowStartZero n
  | (n == 0) = []
@@ -62,7 +62,6 @@ matrixAux n k
 
 --esame 02/07/2019 
 --data una matrice quadrata memorizzata per righe togliere prima riga e prima colonna
-
 getSubmatrix:: [[Int]] -> [[Int]]
 getSubmatrix = removeFirstColumn . removeFirstRow 
 
@@ -79,4 +78,32 @@ getDiag m = getDiagAux m 0
 getDiagAux:: [[Int]] -> Int -> [Int]
 getDiagAux [] _ = []
 getDiagAux (xs:xss) idx = (xs !! idx) : getDiagAux xss (idx + 1)
+
+
+--esame 15/06/2021
+--funzione che fattorizza un numero
+fattorizzazione:: Int -> [Int]
+fattorizzazione n = fatt n 2
+ where
+    fatt n d
+     | n < 2 = []
+     | (n `mod` d == 0) = d : fatt (n `div` d) d
+     | otherwise = fatt n (d + 1)
+
+
+--esame 05/07/2021
+--funzione che determina se una lista è palindroma
+palindromeList:: [Int] -> Bool
+palindromeList lst = (lst == reverse lst)
+
+--verificare che una matrice sia simmetrica rispetto all'asse verticale -> righe palindrome 
+verticalSimmetry:: [[Int]] -> Bool
+verticalSimmetry [] = True
+verticalSimmetry (row:rows)
+ | palindromeList row = verticalSimmetry rows
+ | otherwise = False
+
+--verificare che una matrice sia simmetrica rispetto all'asse orizzontale -> matrice palindroma
+horizontalSimmetry:: [[Int]] -> Bool
+horizontalSimmetry m = (m == reverse m)
 
