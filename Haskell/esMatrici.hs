@@ -1,20 +1,4 @@
 
---1. controlla se tutte le righe della matrice (lista di liste) hanno la stessa lunghezza
-{-matrixDim :: [[Int]] -> (Int,Int)
-matrixDim [[]] = (0,0)
-matrixDim [[xs]] = (1, length [xs])
-matrixDim (xs:xss) = matrixDim1 xss 1
-    where
-        matrixDim1 (ys:yss) row = (row, length [ys]) : matrixDim1 (row +1) yss -}
-
-matrixDim :: [[Int]] -> (Int, Int)
-matrixDim [] = (0, 0)
-matrixDim xs
-  | null (head xs) = (length xs, 0)
-  | otherwise      = (length xs, length (head xs))
-
------------------------------------------------------------------
-
 --2. calcola il vettore della somma dei valori delle colonne della matrice (M memorizzata per colonne come lista di liste)
 colSums :: [[Int]] -> [Int]
 colSums xss = map sum xss

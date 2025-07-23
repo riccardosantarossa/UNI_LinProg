@@ -1,7 +1,5 @@
-{-# LANGUAGE DatatypeContexts #-}
-import qualified Data.List
 
-data (Ord a, Eq a) => Tree a = Nil | Node (Tree a) a (Tree a) 
+data Tree a = Nil | Node (Tree a) a (Tree a) 
  deriving Show
 
 -----------------------------------------------------------------
