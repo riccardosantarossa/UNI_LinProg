@@ -1,7 +1,5 @@
-{-# LANGUAGE DatatypeContexts #-}
-data (Eq a, Show a) => QT a = C a | Q (QT a) (QT a) (QT a) (QT a)
-    deriving Show
-
+data QT a = C a | Q (QT a) (QT a) (QT a) (QT a)
+  deriving (Eq, Show)
 -----------------------------------------------------------------
 
 --1 dati 4 QuadTree, ne costruisce uno combinandoli
@@ -24,3 +22,4 @@ pixelsAtLevel depth (Q as ad bs bd) = pixelsAtLevel (depth + 1) as + pixelsAtLev
 --combinazione delle funzioni
 howManyPixels :: (Eq a, Show a) => QT a -> Int
 howManyPixels = pixelsAtLevel 0
+

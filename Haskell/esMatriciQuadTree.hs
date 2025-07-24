@@ -29,9 +29,7 @@ triangolareInferioreQT (Q as ad bs bd) = --alto a sx, alto a dx, basso a sx, bas
 triangolareInferiore :: (Eq a, Num a) => Mat a -> Bool
 triangolareInferiore (Mat _ qt) = triangolareInferioreQT qt 
 
-
---TEST
--- Costruzione:
+--Input:
 -- [ 4 0 ]
 -- [ 5 7 ]
 
@@ -55,7 +53,7 @@ uppertriangularQT (Q as ad bs bd) =
 uppertriangular :: (Eq a, Num a) => Mat a -> Bool
 uppertriangular (Mat _ qt) = uppertriangularQT qt
 
--- Costruzione:
+-- Input:
 -- [ 1 2 ]
 -- [ 0 6 ]
 
